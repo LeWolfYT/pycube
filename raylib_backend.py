@@ -351,12 +351,13 @@ def musicloop():
                 
                 try:
                     mmusic = rl.load_music_stream(file)
+                    mmusic.looping = False
                     rl.play_music_stream(mmusic)
                     print(f"playing {file}")
                 except:
                     print(f"Error playing {file}")
                     continue
-                while (rl.get_music_time_played(mmusic) < rl.get_music_time_length(mmusic)) and not shuffle and not rl.window_should_close():
+                while rl.is_music_stream_playing(mmusic) and not shuffle and not rl.window_should_close():
                     rl.wait_time(0.1)
                     #it'll automatically break
                 if rl.window_should_close():
