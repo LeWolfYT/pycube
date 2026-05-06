@@ -23,6 +23,8 @@ albumart = True #display album art on the next up list and in fullscreen mode
 
 full = True #adds the music name and 3d album art
 
+noframe = False #removes the window border
+
 #the following only really apply to full mode:
 visualizer = False #enable visualizer bars in the background
 logo = True #toggles the pycube logo

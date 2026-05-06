@@ -104,6 +104,8 @@ visualize = False
 flags = 0
 if bgmode == "transparent":
     flags |= rl.ConfigFlags.FLAG_WINDOW_TRANSPARENT
+if getattr(varr, "noframe", False):
+    flags |= rl.ConfigFlags.FLAG_WINDOW_UNDECORATED
 rl.set_config_flags(flags)
 if getattr(varr, "antialias", False):
     rl.set_config_flags(rl.ConfigFlags.FLAG_MSAA_4X_HINT | flags)
