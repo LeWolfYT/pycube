@@ -91,6 +91,7 @@ width = getattr(varr, "width", 1280)
 height = getattr(varr, "height", 720)
 full = getattr(varr, "full", False)
 albumart = getattr(varr, "albumart", True)
+fullalbumart = getattr(varr, "fullalbumart", True)
 
 bgmode = getattr(varr, "bg", None)
 
@@ -259,7 +260,7 @@ def musicloop():
                                 "artist": artist or None,
                                 "album": audiofile.album or None
                             }
-                            if img != None and albumart:
+                            if img != None and (albumart or fullalbumart):
                                 print("image!!!")
                                 print()
                                 imdata = BytesIO(img.data)
@@ -668,7 +669,7 @@ def main():
                 if bars_old is None:
                     bars = get_bars()
                 else:
-                    bars = 0.5 * bars_old + 0.5 * get_bars()
+                    bars = (2 * bars_old + 1 * get_bars())/3
             except RuntimeWarning:
                 bars = None
 
@@ -801,7 +802,7 @@ def main():
             stylish += delta
             stylish = min(stylish, 1)
             smoothed = pt.easeOutQuad(stylish)
-            if albumart:
+            if fullalbumart:
                 rl.begin_mode_3d(camera)
                 
                 rooot = pt.getPointOnLine(-235, 0, -55, 0, smoothed)[0]
@@ -832,8 +833,15 @@ def main():
                 rl.end_mode_3d()
             
             if full:
-                drawshadowstretch(nextup_info[0]["title"], (futura_condensed, 50), (int(width/2.56) if albumart else 10), int(height/2-80)+(1-smoothed)*20, 5, twidth=(width-(width/2.56 if albumart else 10)-10), totala=int(128+127*smoothed))
-                drawshadowstretch(nextup_info[0]["artist"] or nextup_info[0]["album"] or "", (futura, 30), (int(width/2.56) if albumart else 10), int(height/2-10)+(1-smoothed)*20, 5, twidth=(width-(width/2.56 if albumart else 10)-10), totala=int(128+127*smoothed))
+                drawshadowstretch(nextup_info[0]["title"], (futura_condensed, 50), (int(width/2.56) if fullalbumart else 10), int(height/2-85)+(1-smoothed)*20, 5, twidth=(width-(width/2.56 if fullalbumart else 10)-10), totala=int(128+127*smoothed))
+                drawshadowstretch(nextup_info[0]["artist"] or nextup_info[0]["album"] or "", (futura, 30), (int(width/2.56) if fullalbumart else 10), int(height/2+15)+(1-smoothed)*20, 5, twidth=(width-(width/2.56 if fullalbumart else 10)-10), totala=int(128+127*smoothed))
+                
+                if mmusic:
+                    rl.draw_rectangle((int(width/2.56) if fullalbumart else 10), round(int(height/2)+(1-smoothed)*20-5), width-(int(width/2.56) if fullalbumart else 10)-10-20*fullalbumart, 15, rl.Color(0, 0, 0, int((128+127*smoothed)/2)))
+                    ww = (width-(int(width/2.56) if fullalbumart else 10)-(36 if fullalbumart else 16)) * (rl.get_music_time_played(mmusic) / rl.get_music_time_length(mmusic))
+                    if ww > 0:
+                        rl.draw_rectangle((int(width/2.56) if fullalbumart else 10)+3, round(int(height/2)+(1-smoothed)*20-5)+3, round(ww), 9, rl.Color(255, 255, 255, int(128+127*smoothed)))
+        
         
         #update the display
         if getattr(varr, "logo", False):

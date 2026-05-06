@@ -19,7 +19,7 @@ horizontal = True #if true, the music names will scroll horizontally instead of 
 bunnies = False #adds some jumping bunnies (or whatever you want) to the screen. i use an image of a bunny
 bunnypath = "/path/to/image.png"
 
-albumart = True #display album art on the next up list and in fullscreen mode
+albumart = True #display album art on the next up list
 
 full = True #adds the music name and 3d album art
 
@@ -28,6 +28,7 @@ noframe = False #removes the window border
 #the following only really apply to full mode:
 visualizer = False #enable visualizer bars in the background
 logo = True #toggles the pycube logo
+fullalbumart = True #display large 3d album art
 antialias = True #antialiasing on the 3d album art
 
 #metadata mode:
