@@ -358,6 +358,8 @@ def musicloop():
                 while (rl.get_music_time_played(mmusic) < rl.get_music_time_length(mmusic)) and not shuffle and not rl.window_should_close():
                     rl.wait_time(0.1)
                     #it'll automatically break
+                rl.stop_music_stream(mmusic)
+                rl.unload_music_stream(mmusic)
                 if rl.window_should_close():
                     return
                 shuffle = False
