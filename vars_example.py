@@ -29,3 +29,13 @@ noframe = False #removes the window border
 visualizer = False #enable visualizer bars in the background
 logo = True #toggles the pycube logo
 antialias = True #antialiasing on the 3d album art
+
+#metadata mode:
+#0 - id3 only
+#1 - id3, then .meta
+#2 - .meta, then id3
+#3 - .meta only
+metadata = 2 #2 is the default
+
+#.meta usage:
+#if you have a song called "song.mp3", "song.mp3.meta" will contain the title on the first line and the artist on the second

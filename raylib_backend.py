@@ -175,6 +175,7 @@ elif bgmode == "still":
 
 music_ready = False
 stylish = 0
+meta_mode = getattr(varr, "metadata", 2)
 
 mmusic = None
 bgt_ready = False
@@ -214,18 +215,49 @@ def musicloop():
             
             for file in files:
                 #check for special files like .DS_Store and thumbs.db
-                if os.path.basename(file).startswith(".") or os.path.basename(file) == "Thumbs.db" or os.path.basename(file).endswith(".txt"):
+                if os.path.basename(file).startswith(".") or os.path.basename(file) == "Thumbs.db" or os.path.basename(file).endswith(".txt") or os.path.basename(file).endswith(".meta"):
                     continue
                 #get info
                 if file.endswith(tt.TinyTag.SUPPORTED_FILE_EXTENSIONS):
                     try:
-                        audiofile = tt.TinyTag.get(os.path.join(path, file), image=True)
+                        fullpath = os.path.join(path, file)
+                        audiofile = tt.TinyTag.get(fullpath, image=True)
                         if audiofile is not None:
                             img = audiofile.images.any
+                            title = None
+                            artist = None
+                            
+                            if meta_mode in [0, 1]:
+                                title = audiofile.title
+                                artist = audiofile.artist
+                                if title:
+                                    title = title.strip()
+                                if artist:
+                                    artist = artist.strip()
+                            if meta_mode in [1, 2, 3]:
+                                if os.path.exists(fullpath+".meta"):
+                                    with open(fullpath+".meta", "r") as f:
+                                        meta = f.read().strip()
+                                    if meta:
+                                        lines = meta.split("\n")
+                                        if len(lines) >= 1 and not title:
+                                            title = lines[0]
+                                        if len(lines) >= 2 and not artist:
+                                            artist = lines[1]
+                            if meta_mode == 2:
+                                if not title:
+                                    title = audiofile.title
+                                if not artist:
+                                    artist = audiofile.artist
+                                if title:
+                                    title = title.strip()
+                                if artist:
+                                    artist = artist.strip()
+                                
                             info = {
-                                "title": audiofile.title.strip() or os.path.basename(file),
-                                "artist": audiofile.artist.strip() or None,
-                                "album": audiofile.album.strip() or None
+                                "title": title or os.path.basename(file),
+                                "artist": artist or None,
+                                "album": audiofile.album or None
                             }
                             if img != None and albumart:
                                 print("image!!!")
