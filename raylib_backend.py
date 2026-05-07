@@ -197,7 +197,8 @@ def musicloop():
         finalfiles = []
         finalinfo = []
         print("music path detected")
-        for path in musicpath:
+        for realpath in musicpath:
+            path = os.path.expanduser(realpath)
             #walk
             
             files = []
@@ -330,9 +331,6 @@ def musicloop():
             print("musicch")
             
             while True:
-                if mmusic is not None:
-                    rl.stop_music_stream(mmusic)
-                    rl.unload_music_stream(mmusic)
                 print("music loop start")
                 idx_delayed -= 1
                 idx += 1
@@ -353,17 +351,25 @@ def musicloop():
                 try:
                     mmusic = rl.load_music_stream(file)
                     mmusic.looping = False
-                    rl.play_music_stream(mmusic)
-                    print(f"playing {file}")
                 except:
-                    print(f"Error playing {file}")
-                    continue
+                    print(f"error loading {file}")
+                    mmusic = None
+                if mmusic is not None:
+                    try:
+                        rl.play_music_stream(mmusic)
+                        print(f"playing {file}")
+                    except:
+                        print(f"Error playing {file}")
+                        continue
                 while rl.is_music_stream_playing(mmusic) and not shuffle and not rl.window_should_close():
                     rl.wait_time(0.1)
                     #it'll automatically break
                 if rl.window_should_close():
                     return
                 shuffle = False
+                if mmusic is not None:
+                    rl.unload_music_stream(mmusic)
+                    mmusic = None
 
 def blur(img, radius):
     return rl.image_blur_gaussian(img, radius)
@@ -810,6 +816,7 @@ def main():
                 if "coverraw" in nextup_info[0]:
                     if not nextup_info[0]["bigcovertex"]:
                         nextup_info[0]["bigcovertex"] = rl.load_texture_from_image(nextup_info[0]["coverraw"])
+                        rl.set_texture_filter(nextup_info[0]["bigcovertex"], rl.TextureFilter.TEXTURE_FILTER_ANISOTROPIC_4X)
                     plane.materials[0].maps.texture = nextup_info[0]["bigcovertex"]
                 else:
                     plane.materials[0].maps.texture = planetex
@@ -839,7 +846,7 @@ def main():
                 if mmusic:
                     rl.draw_rectangle((int(width/2.56) if fullalbumart else 10), round(int(height/2)+(1-smoothed)*20-5), width-(int(width/2.56) if fullalbumart else 10)-10-20*fullalbumart, 15, rl.Color(0, 0, 0, int((128+127*smoothed)/2)))
                     ww = (width-(int(width/2.56) if fullalbumart else 10)-(36 if fullalbumart else 16)) * (rl.get_music_time_played(mmusic) / rl.get_music_time_length(mmusic))
-                    if ww > 0:
+                    if round(ww) > 0:
                         rl.draw_rectangle((int(width/2.56) if fullalbumart else 10)+3, round(int(height/2)+(1-smoothed)*20-5)+3, round(ww), 9, rl.Color(255, 255, 255, int(128+127*smoothed)))
         
         
