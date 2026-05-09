@@ -198,7 +198,7 @@ def musicloop():
         finalinfo = []
         print("music path detected")
         for realpath in musicpath:
-            path = os.path.expanduser(realpath)
+            path = os.path.abspath(os.path.expanduser(realpath))
             #walk
             
             files = []
